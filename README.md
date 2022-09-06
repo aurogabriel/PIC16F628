@@ -9,3 +9,7 @@ https://youtube.com/playlist?list=PLm3sxvs1QP5lZEYv2j1ba4IRWGTRr2-Mz
 (Tem que ser essa versão se não num funfa)
 https://drive.google.com/file/d/13wTxHdvk16K0DzP01Rb6jGk3XBAbWWwJ/view?usp=sharing
 
+
+#### Link com o Proteus+Crack ###########
+
+https://drive.google.com/file/d/1iVOJ35W688rpDkVBOYgDs41N-aTQAUug/view?usp=sharing
