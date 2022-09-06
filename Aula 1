@@ -1,0 +1,57 @@
+; O código abaixo aciona um led e faz ele piscar
+;
+#INCLUDE <P16F628a.INC>
+;######## Variáveis #####################################    
+TEMPO EQU 0x20
+CONTA EQU 0x21
+;######### Organização do Código na Memória #####
+ORG 0x0000
+GOTO INICIO
+ORG 0x0004
+ 
+;### Rotina de tratamento de interrupção do Timer0 ##########
+BCF INTCON,T0IF ;Bit Clear F
+DECFSZ TEMPO,F
+RETFIE
+MOVFW CONTA
+MOVWF TEMPO
+MOVLW B'10000000'
+XORWF PORTB,F
+RETFIE
+
+;############## Código Principal #########  
+INICIO
+BANKSEL TRISB
+MOVLW B'01111111' ;Ativa o RB7 com bit 0 nesse registrador
+MOVWF TRISB       ; TRISB ativa os IO B
+MOVLW B'10000111'  ;desativa o PullUp da PORTB e seta o prescaler TMR0 em 1:256
+MOVWF OPTION_REG  
+ ; |RBPU    INTEDG  T0CS    T0SE    PSA	    PS<2:0>: Prescaler Rate Select bits
+;    1	    0	    0	    0	    0	    111
+
+;The Option register is a readable and writable register,
+;which contains various control bits to configure the
+;TMR0/WDT prescaler, the external RB0/INT interrupt,
+;TMR0 and the weak pull-ups on PORTB.
+ 
+BANKSEL PORTB
+MOVLW B'10100000'  ;Enables all un-masked interrupts e também o 
+		    ;Overflow Interrupt Enable bit
+MOVWF INTCON 
+ ; GIE	    PEIE    T0IE    INTE    RBIE    T0IF    INTF    RBIF
+ ;  1	    0	    1	    0	    0	    0	    0	    0
+ ;The INTCON register is a readable and writable
+;register, which contains the various enable and flag bits
+;for all interrupt sources except the comparator module
+ 
+ 
+ 
+MOVLW D'15' ;Coloca 15 decimal em W 
+MOVWF CONTA ;carrega as variáveis com 15
+MOVWF TEMPO
+ 
+;loop infinito, que só é interrompido pela interrupção do Timer
+FIM
+GOTO FIM
+ 
+END
