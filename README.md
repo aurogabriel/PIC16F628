@@ -4,7 +4,8 @@
 
 #### Playlist com as Aulas do professor Luis Henrique (aka LH): #########
 https://youtube.com/playlist?list=PLm3sxvs1QP5lZEYv2j1ba4IRWGTRr2-Mz
-
+##### Site de Referencias para o Assembly ######################
+https://documentation.help/Microchip-MPASM-Assembler/hlpMPASMAsm_06_13.html
 
 #### Link com o .exe do MPLABX 4.20 ##### 
 (Tem que ser essa versão se não num funfa)
