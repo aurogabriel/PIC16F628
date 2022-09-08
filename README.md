@@ -4,6 +4,10 @@
 
 #### Playlist com as Aulas do professor Luis Henrique (aka LH): #########
 https://youtube.com/playlist?list=PLm3sxvs1QP5lZEYv2j1ba4IRWGTRr2-Mz
+
+### Canal do Ygo -> Tem um carrinho aqui ###############
+https://www.youtube.com/channel/UCviLI8rWI9DxccejHCK4FbQ/videos
+
 ##### Site de Referencias para o Assembly ######################
 https://documentation.help/Microchip-MPASM-Assembler/hlpMPASMAsm_06_13.html
 
