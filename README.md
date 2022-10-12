@@ -14,6 +14,6 @@ https://documentation.help/Microchip-MPASM-Assembler/hlpMPASMAsm_06_13.html
 https://drive.google.com/file/d/13wTxHdvk16K0DzP01Rb6jGk3XBAbWWwJ/view?usp=sharing
 
 
-#### Link com o Proteus+Crack ###########
+#### Link com o Proteus ###########
 
 https://drive.google.com/file/d/1iVOJ35W688rpDkVBOYgDs41N-aTQAUug/view?usp=sharing
