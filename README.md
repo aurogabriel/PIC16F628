@@ -1,4 +1,4 @@
-# PIC16F628
+# PIC16F628/PIC16F877
 #Material com códigos comentados da cadeira de micros da UFC da Engenharia Elétrica
 #Para achar os códigos é so pesquisar por Sourse em "Go to file"
 
