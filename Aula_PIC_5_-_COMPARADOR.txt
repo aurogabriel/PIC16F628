@@ -1,0 +1,77 @@
+######################## Comparador de Tensão Analógica #########################################
+
+----> Periférios: Módulo comparador
+	O pic não funciona com tensão de entrada negativa
+
+	( ! )	CMCON 
+	
+#DESAFIO: Configurar o comparador pra ficar alto com uma ref de uma senoide qualquer:
+
+#INCLUDE <p16f628a.inc>
+
+ORG 0x00
+GOTO inicio
+
+ORG 0x04
+	BCF PIR1,CMIF
+	BSF PORTB,7
+	BTFSS CMCON, C2OUT
+	BCF PORTB,7
+	RETFIE
+
+inicio
+	;BANCO 1
+	BANKSEL TRISA
+	BSF TRISA,1
+	BSF TRISA,2	
+	BCF  TRISB,7
+	CLRF PIE1
+	BSF PIE1,CMIE
+	MOVLW B'11000000'
+	MOVWF INTCON
+
+	BANKSEL
+	MOVLW B'00000101'
+	MOVWF CMCON
+	
+FIM
+	GOTO FIM
+
+END
+
+
+
+
+----> Periféricos: Módulo Tensão de Referência
+
+	 
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

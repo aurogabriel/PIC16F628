@@ -1,0 +1,131 @@
+################### Comunicação Serial #####################################
+
+	(+) Periféricos
+		- USART 
+		- Protocolo RS-232
+
+
+	(+) Tipos de Comunicação: 
+		Comunicação Paralela:
+			- Distancia Curta
+			- Amplificação Complexa
+			- Custo Elevado 
+		Comunicação Serial:
+			-Maior Distância 
+			-Fácil Amplificação 
+			-Baixo Custo
+		
+			- Descloca Bit a Bit;
+		
+	(+) Tipos de Serial:
+		A) Simplex: FLuxo de Dados de Sentido Único
+		
+		B) Half-Duplex: Fluxo de Dados em ambos os Sentidos no mesmo condutor	
+	
+		C) Full-Duplex: Fluxo de Daos em ambos os Sentidos um condutor para cada sentido.
+		
+		(+) Todos os Tipos podem ser:
+			i) Síncrona:  Um sinal de Clock em separado é associado com o dado 
+
+			ii)Assíncrona: Não Existe sincronismo entre transmissor e receptor; a re-sincronização 				é feita caractere por caractere.
+		
+
+		----> A FullDuplex tem o seguinte formato: O repouso dela é em 1 e o start bit é dado por 0. Possui de 5 a 8 bits de dados e no final bit de paridade{no pic a gente ta deixando ele opcional}. Tem um bit de stop no final da palavra binária enviada.
+
+		----> Sincronismo necessário para a comunicação assíncrona: 
+			O sinc é feito a cada caractere, através de um clock localizado no receptor, cujo período é K vezes menor do que o período de duração do bit.
+		
+			TB = K. Tc	~  TB = Tempo de duração do  bit
+					~  Tc = Período de Clock de Sincronismo do Caractere
+	
+
+		----->Velocidade de Comunicação:
+			( ! ) Considerando um caractere formado por 11 bits, como se segue:
+
+						1 start bit 
+						8 bits de dados 
+						1 bit de paridade
+						1 stop bit 
+			( ! ) Considerando por exemplo, uma velocidade de comunicação de 10 caracteres por 			segundo, tem-se: 
+  
+					11bits/caractere X 10 caracteres/s = 110 bits/s
+
+				Definição: 
+
+						bit/s = Baud 	
+				
+		
+			 ( ! ) RS232 - C: Foi padronizado pela EIA ( Electronic Industries Association - USA ) 
+					RS  = Recommended Standard 
+					232 = Num da Norma
+					C    = Número de Revisões da Norma ( Em hexa ?? )
+
+ 
+	( + ) DESAFIO: Configurar a USART para a Comunicação assíncrona (RS-232) 9600, 8bits, sem 			partidade e 1 stop-bit. 
+
+
+				#include <p16f628a.inc>
+				
+				ORG 0x00
+				   GOTO inicio
+				ORG 0x04
+				
+
+				inicio
+				  MOVLW   B'10000000'
+				  MOVWF   RCSTA
+
+				  BANKSEL  TXSTA         	; Mudo da Banco
+				  MOVLW     B'00100110'
+				  MOVWF     TXSTA	
+				  MOVLW     D'25'
+				  MOVWF     SPBRG	
+				  MOVLW     B'00010000'
+				  MOVWF     PIE1
+				  MOVLW     B'11000000'
+				  MOVWF    INTCON
+				FIM 
+				GOTO FIM
+				END 
+
+
+	( + ) DESAFIO: Enviar o conteúdo da porta A para um computador por comunicação serial (RS-232) ao 		pressionarmos um botão ( ligado em RB0/INT)
+		
+		( - ) 9600 8N1  => BR = 9600	8bits___Sem Bit de Paridade___ 1stop bit 
+		
+		( - ) Fosc = 4MHz
+ 
+
+
+			-----> CÁLCULO DO SPBRG: 
+				
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

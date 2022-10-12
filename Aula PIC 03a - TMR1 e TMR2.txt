@@ -1,0 +1,103 @@
+############### Pisca LED com outros TMRs  #####################
+
+--->  TMR1  é um contador de 16bits; 
+	Nessa família todos os registradores são de 8 bits, então o TMR1 usa dois deles, o (TMR1L) + (TMR1H)
+	
+	Para configurar usamos o T1CON, nele podemos ajustar um prescaler independente, nos bits 	<T1CKPS1:T1CKPS0>
+
+
+----> As interrupções desse timer são de periféricos, então tenho que ativar a chave de interrupção individual aLÉM da chave de periféricos e da global.
+
+			         ----------------------- PRESCALERS DO TMR1 -----------------------
+				
+					1:1	1:2	1:4	1:8
+
+	
+	(+) Todos os tmr são do banco 0; 
+			Olhar o datasheet é a melhor coisa a ser feita na vida.
+
+
+
+	F_int = ( CLK/Prescale  ) / ( 65536 - <TMR1H:TMR1L> )
+		
+		@ Veja que a fórmula é a msm para ambos os timers, mas o timer 1  tem fontes de clock 	diferentes e possui um contador de 16bits.
+
+	
+	
+
+	( + ) DESAFIO: Configurar o Timer 1 para gerar a interrupção a uma frequência de 2Hz.          			(Com Fosc= 4MHz)
+
+		
+		#include <p16f628a.inc>
+
+		ORG 0x00
+		  GOTO inicio
+		ORG 0x04
+		BCF	PIR1,TMR1IF
+		BANKSEL TMR1L		;Recarrega o TMR1
+		MOVLW    B'11011100' 
+		MOVWF    TMR1L
+		MOVLW   B'00001011'
+		MOVWF   TMR1H
+
+		 MOVLW B'10000000'
+		 XORWF PORTB,F  ; Responsável pelo toggle 
+
+		RETFIE  
+
+		inicio
+ 		  BANKSEL TRISB
+		  MOVLW B'01111111'
+		  MOVWF TRISB
+		  
+		  BANKSEL OPTION_REG
+		  MOVLW   B'10000000'  	;1000 0111
+		  MOVWF OPTION_REG        ; 
+		
+		BANKSEL TMR1L		;Carrega o TMR1
+
+		MOVLW    B'11011100' 
+		MOVWF    TMR1L
+		
+		MOVLW   B'00001011'
+		MOVWF   TMR1H
+
+		; Iniciando as Interrupções
+		BANKSEL INTCON
+		MOVLW    B'11000000'
+		MOVWF    INTCON
+
+		BANKSEL PIE1
+		MOVLW    B'00000001'
+		MOVWF    PIE1
+		FIM
+		GOTO FIM
+		END
+
+
+
+obs: ta se comportando meio estanho kk, mas ta oscilando com a frequência certa pelo menos
+
+
+
+
+------->  TMR2:  Esse, além de ter um prescale tem também um poscale, que permite contar quantos estouros desse timer gera uma flag de interrupção. 
+
+	(+)  Registrador PR2: Controla o momento de estouro, podendo esse timer estourar em um 		momento diferente de 0xFF.
+
+	(+)  As interrupções dele estão nos mesmos registradores que o tmr1
+
+	(+) As configurações desse registrador está no T2CON
+
+ 
+
+
+
+
+
+
+
+
+
+
+

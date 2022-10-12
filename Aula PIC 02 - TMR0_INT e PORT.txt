@@ -1,0 +1,191 @@
+################# Aula 2: Pisca LED ###############################################
+
+!!!!!!!!!!!!!!!	Diretivas Utilizadas: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+- #INCLUDE : Possibilita a inlcusão de um arquivo durante a compilação
+	
+	#INCLUDE <p16f877.inc>
+	#INCLUDE <p16f628a.inc>
+ 
+-EQU: atribui um nome a uma posição específica de memória RAM. Cria uma variável;
+	
+	TEMPO EQU 0x20  -> Coloca o nome TEMPO no endereço 0x20
+
+- CBLOCK  /  ENDC : Cria uma sequência de variaveis no endereço de começo do CBLOCK;
+
+	CBLOCK 0x20
+		tempo
+		conta
+		espaço
+	ENDC
+
+
+
+-ORG:  Especifica uma posição da memória para o Programa.
+	
+	ORG 0x00
+		GOTO inicio
+	ORG 0X04
+		...
+
+	inicio ...
+
+-END: Termina o programa.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!! Criação do Programa !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	+ Configuração da Porta: Usa registradores em bancos de memória diferentes, logo precisa ficar usando 			o banksel para escolher o canto certo do registrador. 
+		
+		- BANKSEL: Gera o código para seleção do banco de memória para acesso direto. Também é 			uma diretiva. Importante para poder usar os registradores em bancos diferentes.
+				
+			BANKSEL TRISA == Seleciona o banco 1
+			
+		- PORTAS B: Tudo são multiplexados, usaremos io
+			
+			TRISA  - Se tiver como 1 é input se tiver como 0 é output
+			PORTA - Esse registrador mostra o que tem na porta(w/r)
+
+			TRISB - Se tiver como 1 é input se tiver como 0 é output
+			PORTB - Esse registrador mostra o que tem na porta (w/r)
+		
+	+ DESAFIO: Configurar o pino 7 da porta B (RB7) como sendo de saída e colocar ele em nível baixo.
+
+		#INCLUDE <p16f628a.inc>
+		
+		ORG 0x00
+	  	   GOTO inicio
+		ORG 0x04
+			;Espaço para interrupções
+		inicio	
+		
+		 BANKSEL TRISB
+		MOVLW 0x7F
+		MOVWF TRISB
+		BANKSEL PORTB
+		MOVLW 0x00
+		MOVWF PORTB
+
+
+
+	+ TIMER0: Junto do WDT; Pode ser configurado para clock interno como para fonte de clock externo.
+							      O Clock interno é de 4MHz
+		
+		# Para configurar o tmr0 usamos o registrador OPTION_REG <5:0> 
+			(Olhar datasheet)
+	
+
+		# Equações:
+			
+		---->	Tempo_total = (256 - tempo_inicial) * Prescaler * Ciclo_maquina
+
+		onde:
+
+		---->  Ciclo_maquina =  4 / (Frequência do clock_Cristal) 	
+			
+				8 4 2 1
+	+ DESAFIO: Configurar o Timer 0 para trabalhar com o clock interno e com um prescaler de 1:256.
+		Desabilitando os resistores de "pull-ups" da porta B
+		
+		#INCLUDE <p16f628a.inc>
+
+		ORG 0x00
+			GOTO inicio
+		ORG 0x04
+			;Espaço para as interrupções
+		
+		inicio
+		  BANKSEL OPTION_REG
+		  MOVLW   0x87		;1000 0111
+		  MOVWF OPTION_REG        ; Configuro tudo que foi pedido nesse registrador aqui
+			
+	+ INTERRUPÇÃO: 
+		
+		(#) PIE1: 
+		(#) PIR1: 
+		
+
+		(#) INTCON: Parte desse registrador é para enable
+
+				8421
+	+ DESAFIO: Habilitar a interrupção de estouro do timer 0 (pic628a)
+
+
+		#INCLUDE <p16f628a.inc>
+
+		ORG 0x00
+			GOTO inicio
+		ORG 0x04
+			;Espaço para as interrupções
+		
+		inicio
+		  BANKSEL OPTION_REG
+		  MOVLW   0x87		;1000 0111
+		  MOVWF OPTION_REG        ; Configuro o tmr0 aqui com 1:256 e desativo o pull-up
+		
+		  MOVLW   0xA0		; 1010 0000	 
+		  MOVWF   INTCON		; Configuro o tmr0 para gerar interrupções
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  PROGRAMA EM SI: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	+ CÁLCULO DA FREQUÊNCIA:
+		F_int =  ( (F_osc/4) / Prescaler ) / (256-TMR0)
+		F_int =  ( (4MHz/4) / 256 ) /256
+		F_int =  15.258Hz	
+		T_int = 0.0655s
+
+		--> Contaremos 15 interrupções para termos um período de 2s
+
+
+   	--> Não funciona em "0x" não sei o porque mas foda-se 
+
+	+O CÓDIGO EM SI:
+
+		#INCLUDE <p16f628a.inc>
+		
+		CBLOCK 0x20
+			CONTA 
+			TEMPO
+		ENDC 
+		ORG 0x00
+			GOTO inicio
+		ORG 0x04
+			;Espaço para as interrupções
+		 BCF INTCON, T0IF
+		 DECFSZ TEMPO,F
+		 RETFIE
+		 MOVFW CONTA		
+		 MOVWF TEMPO
+		 MOVLW B'10000000'
+		 XORWF PORTB,F  ; Responsável pelo toggle 
+		 RETFIE
+
+		inicio
+		  BANKSEL TRISB
+		  MOVLW B'01111111'
+		  MOVWF TRISB
+		  
+		  BANKSEL OPTION_REG
+		  MOVLW   B'10000111'  	;1000 0111
+		  MOVWF OPTION_REG        ; Configuro o tmr0 aqui com 1:256 e desativo o pull-up
+		
+		  MOVLW   B'10100000'		; 1010 0000	 
+		  MOVWF   INTCON		; Configuro o tmr0 para gerar interrupções
+		
+		 MOVLW D'15'
+		 MOVWF CONTA
+		 MOVWF TEMPO
+		 BANKSEL PORTB
+		fim 
+			GOTO fim
+		END
+
+
+
+
+
+
+
+
+
+ 
